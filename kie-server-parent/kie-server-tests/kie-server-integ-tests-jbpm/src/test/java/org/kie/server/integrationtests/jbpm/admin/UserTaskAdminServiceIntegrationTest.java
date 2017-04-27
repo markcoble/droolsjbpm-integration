@@ -45,7 +45,6 @@ public class UserTaskAdminServiceIntegrationTest extends JbpmKieServerBaseIntegr
     private static ReleaseId releaseId = new ReleaseId("org.kie.server.testing", "definition-project",
             "1.0.0.Final");
 
-
     @BeforeClass
     public static void buildAndDeployArtifacts() {
 
@@ -54,7 +53,7 @@ public class UserTaskAdminServiceIntegrationTest extends JbpmKieServerBaseIntegr
 
         kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
 
-        createContainer(CONTAINER_ID, releaseId);
+        createContainer(CONTAINER_ID, releaseId, CONTAINER_ID_ALIAS, null);
     }
 
     @Override
@@ -101,7 +100,7 @@ public class UserTaskAdminServiceIntegrationTest extends JbpmKieServerBaseIntegr
             }
         }
     }
-
+    
     @Test
     public void testRemovePotentialOwnersWithBadContainerId() throws Exception{
         changeUser(USER_ADMINISTRATOR);
@@ -121,6 +120,70 @@ public class UserTaskAdminServiceIntegrationTest extends JbpmKieServerBaseIntegr
         }
     }
 
+    @Test
+    public void testAddRemovePotOwnersWithContainerAlias() throws Exception {
+        changeUser(USER_ADMINISTRATOR);
+        Map<String, Object> parameters = new HashMap<String, Object>();
+
+        Long processInstanceId = null;
+        try {
+            processInstanceId = processClient.startProcess(CONTAINER_ID_ALIAS, PROCESS_ID_EVALUATION, parameters);
+            Assertions.assertThat(processInstanceId).isNotNull();
+            Assertions.assertThat(processInstanceId.longValue()).isGreaterThan(0);
+
+            List<TaskSummary> tasks = taskClient.findTasksAssignedAsBusinessAdministrator(USER_ADMINISTRATOR, 0, 10);
+            Assertions.assertThat(tasks).hasSize(1);
+
+            TaskSummary task = tasks.get(0);
+
+            TaskInstance instance = taskClient.getTaskInstance(CONTAINER_ID_ALIAS, task.getId(), false, false, true);
+            Assertions.assertThat(instance).isNotNull();
+
+            List<String> potOwners = instance.getPotentialOwners();
+            Assertions.assertThat(potOwners).hasSize(3);
+            Assertions.assertThat(potOwners).contains(USER_YODA, "PM", "HR");
+
+            OrgEntities add = OrgEntities.builder().users(Arrays.asList(USER_JOHN)).build();
+
+            userTaskAdminClient.addPotentialOwners(CONTAINER_ID_ALIAS, task.getId(), false, add);
+
+            instance = taskClient.getTaskInstance(CONTAINER_ID_ALIAS, task.getId(), false, false, true);
+            Assertions.assertThat(instance).isNotNull();
+            potOwners = instance.getPotentialOwners();
+            Assertions.assertThat(potOwners).hasSize(4);
+            Assertions.assertThat(potOwners).contains(USER_YODA, USER_JOHN, "PM", "HR");
+
+            userTaskAdminClient.removePotentialOwnerUsers(CONTAINER_ID_ALIAS, task.getId(), USER_YODA);
+
+            instance = taskClient.getTaskInstance(CONTAINER_ID_ALIAS, task.getId(), false, false, true);
+            Assertions.assertThat(instance).isNotNull();
+            potOwners = instance.getPotentialOwners();
+            Assertions.assertThat(potOwners).hasSize(3);
+            Assertions.assertThat(potOwners).contains(USER_JOHN, "PM", "HR");
+
+            userTaskAdminClient.removePotentialOwnerGroups(CONTAINER_ID_ALIAS, task.getId(), "PM", "HR");
+            instance = taskClient.getTaskInstance(CONTAINER_ID_ALIAS, task.getId(), false, false, true);
+            Assertions.assertThat(instance).isNotNull();
+            potOwners = instance.getPotentialOwners();
+            Assertions.assertThat(potOwners).hasSize(1);
+            Assertions.assertThat(potOwners).contains(USER_JOHN);
+
+            add = OrgEntities.builder().users(Arrays.asList(USER_YODA)).groups(Arrays.asList("PM")).build();
+
+            userTaskAdminClient.addPotentialOwners(CONTAINER_ID_ALIAS, task.getId(), false, add);
+
+            instance = taskClient.getTaskInstance(CONTAINER_ID_ALIAS, task.getId(), false, false, true);
+            Assertions.assertThat(instance).isNotNull();
+            potOwners = instance.getPotentialOwners();
+            Assertions.assertThat(potOwners).hasSize(3);
+            Assertions.assertThat(potOwners).contains(USER_YODA, USER_JOHN, "PM");
+
+        } finally {
+            if (processInstanceId != null) {
+                processClient.abortProcessInstance(CONTAINER_ID_ALIAS, processInstanceId);
+            }
+        }
+    }
     @Test
     public void testReassignNotCompletedOnNonExistentTask() throws Exception {
         OrgEntities reassign = OrgEntities.builder().users(Arrays.asList(USER_JOHN)).build();
