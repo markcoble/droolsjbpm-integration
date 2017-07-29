@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="batch-fluent" type="batchImpl"/>
+
+  <xs:element name="fireAllRulesCommand" type="fireAllRulesCommand"/>
+
+  <xs:element name="getGlobalCommand" type="getGlobalCommand"/>
+
+  <xs:element name="insertObjectCommand" type="insertObjectCommand"/>
+
+  <xs:element name="newKieSessionCommand" type="newKieSessionCommand"/>
+
+  <xs:element name="setGlobalCommand" type="setGlobalCommand"/>
+
+  <xs:complexType name="batchImpl">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="stack-item" type="batchImpl"/>
+        <xs:element name="new-session" type="newKieSessionCommand"/>
+        <xs:element name="get-kie-container" type="getKieContainerCommand"/>
+        <xs:element name="get-global" type="getGlobalCommand"/>
+        <xs:element name="set-global" type="setGlobalCommand"/>
+        <xs:element name="insert" type="insertObjectCommand"/>
+        <xs:element name="fire-all-rules" type="fireAllRulesCommand"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="distance" type="xs:long" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="newKieSessionCommand">
+    <xs:sequence>
+      <xs:element name="sessionId" type="xs:string"/>
+      <xs:element name="releaseId" type="releaseIdImpl" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="releaseIdImpl">
+    <xs:complexContent>
+      <xs:extension base="afReleaseIdImpl">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="afReleaseIdImpl">
+    <xs:sequence>
+      <xs:element name="artifactId" type="xs:string" minOccurs="0"/>
+      <xs:element name="groupId" type="xs:string" minOccurs="0"/>
+      <xs:element name="snapshotVersion" type="xs:string" minOccurs="0"/>
+      <xs:element name="version" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getKieContainerCommand">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getGlobalCommand">
+    <xs:sequence/>
+    <xs:attribute name="identifier" type="xs:string" use="required"/>
+    <xs:attribute name="out-identifier" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="setGlobalCommand">
+    <xs:sequence>
+      <xs:element name="object" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="identifier" type="xs:string" use="required"/>
+    <xs:attribute name="out-identifier" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="insertObjectCommand">
+    <xs:sequence>
+      <xs:element name="object" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="out-identifier" type="xs:string"/>
+    <xs:attribute name="return-object" type="xs:boolean" use="required"/>
+    <xs:attribute name="entry-point" type="xs:string"/>
+    <xs:attribute name="disconnected" type="xs:boolean" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="fireAllRulesCommand">
+    <xs:sequence/>
+    <xs:attribute name="max" type="xs:int" use="required"/>
+    <xs:attribute name="out-identifier" type="xs:string"/>
+  </xs:complexType>
+</xs:schema>
+
