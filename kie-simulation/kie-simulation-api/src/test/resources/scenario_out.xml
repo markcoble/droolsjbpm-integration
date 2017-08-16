@@ -13,13 +13,7 @@
         </get-kie-container>
     </scenario-command>
     <scenario-command distance="0">
-        <new-session>
-            <releaseId>
-                <artifactId>artifact</artifactId>
-                <groupId>org.default</groupId>
-                <version>1.0.0-SNAPSHOT</version>
-            </releaseId>
-        </new-session>
+        <new-session/>
     </scenario-command>
     <scenario-command distance="0">
         <insert return-object="true" entry-point="DEFAULT" disconnected="false">
@@ -48,7 +42,7 @@
     <scenario-command distance="0">
         <out name="person"/>
     </scenario-command>
-        <scenario-command distance="0">
+    <scenario-command distance="0">
         <dispose/>
     </scenario-command>
 </simulation-request>

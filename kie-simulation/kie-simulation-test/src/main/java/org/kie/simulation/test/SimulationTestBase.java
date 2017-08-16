@@ -44,6 +44,7 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.simulation.test.model.Person;
 
 public class SimulationTestBase {
 
@@ -113,7 +114,7 @@ public class SimulationTestBase {
     public static <T> String convertObjectToXML( T object ) {
         try {
             StringWriter stringWriter = new StringWriter();
-            JAXBContext context = JAXBContext.newInstance( object.getClass() );
+            JAXBContext context = JAXBContext.newInstance( object.getClass(), Person.class );
 
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT,
@@ -140,10 +141,10 @@ public class SimulationTestBase {
         }
     }
 
-    private String readFile(String fileName) {
+    public static String readFile(String fileName) {
         Path path;
         StringBuilder file = new StringBuilder();
-        try (Stream<String> lines = Files.lines(Paths.get(getClass().getClassLoader()
+        try (Stream<String> lines = Files.lines(Paths.get(SimulationTestBase.class.getClassLoader()
                                                                     .getResource(fileName).toURI()),
                                                 Charset.defaultCharset())) {
             lines.forEach(line -> file.append(line).append("\n"));
