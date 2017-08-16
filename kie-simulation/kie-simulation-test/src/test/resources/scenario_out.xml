@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<simulation-request>
+    <scenario-command distance="0">
+        <new-application-context name="app1"/>
+    </scenario-command>
+    <scenario-command distance="0">
+        <get-kie-container>
+            <releaseId>
+                <artifactId>artifact</artifactId>
+                <groupId>org.default</groupId>
+                <version>1.0.0-SNAPSHOT</version>
+            </releaseId>
+        </get-kie-container>
+    </scenario-command>
+    <scenario-command distance="0">
+        <new-session>
+            <releaseId>
+                <artifactId>artifact</artifactId>
+                <groupId>org.default</groupId>
+                <version>1.0.0-SNAPSHOT</version>
+            </releaseId>
+        </new-session>
+    </scenario-command>
+    <scenario-command distance="0">
+        <insert return-object="true" entry-point="DEFAULT" disconnected="false">
+            <person>
+                <addressArray>
+                    <number>l2</number>
+                    <phone>l3</phone>
+                    <street>add1</street>
+                </addressArray>
+                <addressArray>
+                    <number>l2</number>
+                    <phone>l3</phone>
+                    <street>add2</street>
+                </addressArray>
+                <age>0</age>
+                <name>Simmy Sim</name>
+            </person>
+        </insert>
+    </scenario-command>
+    <scenario-command distance="0">
+        <fire-all-rules max="-1"/>
+    </scenario-command>
+    <scenario-command distance="0">
+        <get-global identifier="person"/>
+    </scenario-command>
+    <scenario-command distance="0">
+        <out name="person"/>
+    </scenario-command>
+</simulation-request>
