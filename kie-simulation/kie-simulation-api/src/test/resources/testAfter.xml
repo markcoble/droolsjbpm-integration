@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<simulation-request>
-    <scenario-command distance="1000">
+<executable-fluent>
+    <batch distance="1000">
         <new-application-context name="app1"/>
-    </scenario-command>
-    <scenario-command distance="0">
         <get-kie-container>
-            <releaseId>
+            <releaseId xsi:type="afReleaseIdImpl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <artifactId>artifact</artifactId>
                 <groupId>org.default</groupId>
                 <version>1.0.0-SNAPSHOT</version>
             </releaseId>
         </get-kie-container>
-    </scenario-command>
-    <scenario-command distance="0">
         <new-session/>
-    </scenario-command>
-    <scenario-command distance="0">
         <insert return-object="true" entry-point="DEFAULT" disconnected="false">
             <person>
                 <addressArray>
@@ -32,41 +26,23 @@
                 <name>Simmy Sim</name>
             </person>
         </insert>
-    </scenario-command>
-    <scenario-command distance="0">
         <fire-all-rules max="-1"/>
-    </scenario-command>
-    <scenario-command distance="0">
         <get-global identifier="person"/>
-    </scenario-command>
-    <scenario-command distance="0">
-        <out name="p1"/>
-    </scenario-command>
-    <scenario-command distance="0">
+        <out name="outS1"/>
         <get-global identifier="timeNow"/>
-    </scenario-command>
-    <scenario-command distance="0">
         <out name="timeNow1"/>
-    </scenario-command>
-    <scenario-command distance="0">
         <dispose/>
-    </scenario-command>
-    <scenario-command distance="2000">
+    </batch>
+    <batch distance="2000">
         <new-application-context name="app1"/>
-    </scenario-command>
-    <scenario-command distance="0">
         <get-kie-container>
-            <releaseId>
+            <releaseId xsi:type="afReleaseIdImpl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <artifactId>artifact</artifactId>
                 <groupId>org.default</groupId>
                 <version>1.0.0-SNAPSHOT</version>
             </releaseId>
         </get-kie-container>
-    </scenario-command>
-    <scenario-command distance="0">
         <new-session/>
-    </scenario-command>
-    <scenario-command distance="0">
         <insert return-object="true" entry-point="DEFAULT" disconnected="false">
             <person>
                 <addressArray>
@@ -83,23 +59,11 @@
                 <name>Simmy Sim</name>
             </person>
         </insert>
-    </scenario-command>
-    <scenario-command distance="0">
         <fire-all-rules max="-1"/>
-    </scenario-command>
-    <scenario-command distance="0">
         <get-global identifier="person"/>
-    </scenario-command>
-    <scenario-command distance="0">
-        <out name="p2"/>
-    </scenario-command>
-    <scenario-command distance="0">
+        <out name="outS2"/>
         <get-global identifier="timeNow"/>
-    </scenario-command>
-    <scenario-command distance="0">
         <out name="timeNow2"/>
-    </scenario-command>
-    <scenario-command distance="0">
         <dispose/>
-    </scenario-command>
-</simulation-request>
+    </batch>
+</executable-fluent>

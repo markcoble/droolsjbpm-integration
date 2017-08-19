@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<executable-fluent>
+    <batch distance="0">
+        <new-application-context name="app1"/>
+        <start-conversation/>
+        <get-kie-container>
+            <releaseId xsi:type="afReleaseIdImpl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <artifactId>artifact</artifactId>
+                <groupId>org.default</groupId>
+                <version>1.0.0-SNAPSHOT</version>
+            </releaseId>
+        </get-kie-container>
+        <new-session/>
+        <insert return-object="true" entry-point="DEFAULT" disconnected="false">
+            <person>
+                <addressArray>
+                    <number>l2</number>
+                    <phone>l3</phone>
+                    <street>add1</street>
+                </addressArray>
+                <addressArray>
+                    <number>l2</number>
+                    <phone>l3</phone>
+                    <street>add2</street>
+                </addressArray>
+                <age>0</age>
+                <name>Simmy Sim</name>
+            </person>
+        </insert>
+        <fire-all-rules max="-1"/>
+        <dispose/>
+    </batch>
+</executable-fluent>

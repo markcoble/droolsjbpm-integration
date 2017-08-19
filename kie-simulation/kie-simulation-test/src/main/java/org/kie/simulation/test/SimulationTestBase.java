@@ -32,6 +32,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.drools.core.command.RequestContextImpl;
+import org.drools.core.fluent.impl.ExecutableImpl;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -53,20 +55,22 @@ public class SimulationTestBase {
         KieModuleModel kproj = ks.newKieModuleModel();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        for ( int i = 0; i < pairs.length; i += 2 ) {
+        for (int i = 0; i < pairs.length; i += 2) {
             String id = pairs[i];
             String rule = pairs[i + 1];
 
-            kfs.write( "src/main/resources/" + id.replaceAll( "\\.", "/" ) + "/rule" + i + ".drl", rule );
+            kfs.write("src/main/resources/" + id.replaceAll("\\.",
+                                                            "/") + "/rule" + i + ".drl",
+                      rule);
 
-            KieBaseModel kBase1 = kproj.newKieBaseModel( id )
-                    .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
-                    .setEventProcessingMode( EventProcessingOption.STREAM )
-                    .addPackage( id );
+            KieBaseModel kBase1 = kproj.newKieBaseModel(id)
+                                       .setEqualsBehavior(EqualityBehaviorOption.EQUALITY)
+                                       .setEventProcessingMode(EventProcessingOption.STREAM)
+                                       .addPackage(id);
 
             KieSessionModel ksession1 = kBase1.newKieSessionModel(id + ".KSession1")
-                    .setType(KieSessionModel.KieSessionType.STATEFUL)
-                    .setClockType(ClockTypeOption.get("pseudo"));
+                                              .setType(KieSessionModel.KieSessionType.STATEFUL)
+                                              .setClockType(ClockTypeOption.get("pseudo"));
         }
 
         kfs.writeKModuleXML(kproj.toXML());
@@ -74,70 +78,74 @@ public class SimulationTestBase {
         // buildAll() automatically adds the module to the kieRepository
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         assertTrue(kieBuilder.getResults().getMessages().isEmpty());
-        
+
         KieModule kieModule = kieBuilder.getKieModule();
         return kieModule.getReleaseId();
     }
 
     public static ReleaseId createKJarWithMultipleResources(String id,
-                                                        String[] resources,
-                                                        ResourceType[] types) {
+                                                            String[] resources,
+                                                            ResourceType[] types) {
         KieServices ks = KieServices.Factory.get();
         KieModuleModel kproj = ks.newKieModuleModel();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        for ( int i = 0; i < resources.length; i++ ) {
+        for (int i = 0; i < resources.length; i++) {
             String res = resources[i];
             String type = types[i].getDefaultExtension();
 
-            kfs.write( "src/main/resources/" + id.replaceAll( "\\.", "/" ) + "/org/test/res" + i + "." + type, res );
+            kfs.write("src/main/resources/" + id.replaceAll("\\.",
+                                                            "/") + "/org/test/res" + i + "." + type,
+                      res);
         }
 
-        KieBaseModel kBase1 = kproj.newKieBaseModel( id )
-                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
-                .setEventProcessingMode( EventProcessingOption.STREAM );
+        KieBaseModel kBase1 = kproj.newKieBaseModel(id)
+                                   .setEqualsBehavior(EqualityBehaviorOption.EQUALITY)
+                                   .setEventProcessingMode(EventProcessingOption.STREAM);
 
-        KieSessionModel ksession1 = kBase1.newKieSessionModel( id + ".KSession1" )
-                .setDefault(true)
-                .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType( ClockTypeOption.get( "pseudo" ) );
+        KieSessionModel ksession1 = kBase1.newKieSessionModel(id + ".KSession1")
+                                          .setDefault(true)
+                                          .setType(KieSessionModel.KieSessionType.STATEFUL)
+                                          .setClockType(ClockTypeOption.get("pseudo"));
 
         kfs.writeKModuleXML(kproj.toXML());
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         assertTrue(kieBuilder.getResults().getMessages().isEmpty());
-        
+
         KieModule kieModule = kieBuilder.getKieModule();
         return kieModule.getReleaseId();
     }
-    
-    public static <T> String convertObjectToXML( T object ) {
+
+    public static <T> String convertObjectToXML(T object) {
         try {
             StringWriter stringWriter = new StringWriter();
-            JAXBContext context = JAXBContext.newInstance( object.getClass(), Person.class );
+            JAXBContext context = JAXBContext.newInstance(object.getClass(),
+                                                          ExecutableImpl.class,
+                                                          Person.class);
 
             Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT,
-                                    Boolean.TRUE );
-            marshaller.marshal( object,
-                                stringWriter );
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+                                   Boolean.TRUE);
+            marshaller.marshal(object,
+                               stringWriter);
             return stringWriter.toString();
-        } catch ( JAXBException e ) {
-            System.err.println( String.format( "Exception while marshalling: %s",
-                                               e.getMessage() ) );
+        } catch (JAXBException e) {
+            System.err.println(String.format("Exception while marshalling: %s",
+                                             e.getMessage()));
         }
         return null;
     }
 
-    public static <T> T convertXMLToObject( String xml,
-                                            Class... clazz ) {
+    public static <T> T convertXMLToObject(String xml,
+                                           Class... clazz) {
         try {
-            JAXBContext context = JAXBContext.newInstance( clazz );
+            JAXBContext context = JAXBContext.newInstance(clazz);
             Unmarshaller um = context.createUnmarshaller();
-            return (T) um.unmarshal( new StringReader( xml ) );
-        } catch ( JAXBException je ) {
-            throw new RuntimeException( "Error interpreting XML response",
-                                        je );
+            return (T) um.unmarshal(new StringReader(xml));
+        } catch (JAXBException je) {
+            throw new RuntimeException("Error interpreting XML response",
+                                       je);
         }
     }
 
@@ -145,7 +153,7 @@ public class SimulationTestBase {
         Path path;
         StringBuilder file = new StringBuilder();
         try (Stream<String> lines = Files.lines(Paths.get(SimulationTestBase.class.getClassLoader()
-                                                                    .getResource(fileName).toURI()),
+                                                                                  .getResource(fileName).toURI()),
                                                 Charset.defaultCharset())) {
             lines.forEach(line -> file.append(line).append("\n"));
             lines.close();

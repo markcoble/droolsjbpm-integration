@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<simulation-request>
-    <scenario-command distance="0">
+<executable-fluent>
+    <batch distance="0">
         <new-application-context name="app1"/>
-    </scenario-command>
-    <scenario-command distance="0">
+        <start-conversation/>
         <get-kie-container>
-            <releaseId>
+            <releaseId xsi:type="afReleaseIdImpl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <artifactId>artifact</artifactId>
                 <groupId>org.default</groupId>
                 <version>1.0.0-SNAPSHOT</version>
             </releaseId>
         </get-kie-container>
-    </scenario-command>
-    <scenario-command distance="0">
         <new-session/>
-    </scenario-command>
-    <scenario-command distance="0">
         <insert return-object="true" entry-point="DEFAULT" disconnected="false">
             <person>
                 <addressArray>
@@ -29,20 +24,12 @@
                     <street>add2</street>
                 </addressArray>
                 <age>0</age>
-                <name>Simmy Sim</name>
+                <name>p1</name>
             </person>
         </insert>
-    </scenario-command>
-    <scenario-command distance="0">
         <fire-all-rules max="-1"/>
-    </scenario-command>
-    <scenario-command distance="0">
         <get-global identifier="person"/>
-    </scenario-command>
-    <scenario-command distance="0">
-        <out name="person"/>
-    </scenario-command>
-    <scenario-command distance="0">
+        <set name="outS1" scope="CONVERSATION"/>
         <dispose/>
-    </scenario-command>
-</simulation-request>
+    </batch>
+</executable-fluent>
