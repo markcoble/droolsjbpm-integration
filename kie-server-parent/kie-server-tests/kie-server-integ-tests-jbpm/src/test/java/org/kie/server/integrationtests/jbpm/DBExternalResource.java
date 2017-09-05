@@ -35,13 +35,24 @@ public class DBExternalResource extends ExternalResource {
     protected void before() throws Throwable {
 
         KieServerBaseIntegrationTest.cleanupSingletonSessionId();
+//        if (TestConfig.isLocalServer()) {
+//            pds = new PoolingDataSource();
+//            pds.setUniqueName("jdbc/jbpm-ds");
+//            pds.setClassName("org.h2.jdbcx.JdbcDataSource");
+//            pds.getDriverProperties().put("user", "sa");
+//            pds.getDriverProperties().put("password", "");
+//            pds.getDriverProperties().put("URL", "jdbc:h2:mem:jbpm-db;MVCC=true");
+//            pds.init();
+//        }
         if (TestConfig.isLocalServer()) {
             pds = new PoolingDataSource();
             pds.setUniqueName("jdbc/jbpm-ds");
-            pds.setClassName("org.h2.jdbcx.JdbcDataSource");
-            pds.getDriverProperties().put("user", "sa");
-            pds.getDriverProperties().put("password", "");
-            pds.getDriverProperties().put("URL", "jdbc:h2:mem:jbpm-db;MVCC=true");
+            pds.setClassName("org.mariadb.jdbc.MySQLDataSource");
+            pds.getDriverProperties().put("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
+
+            pds.getDriverProperties().put("user", "root");
+            pds.getDriverProperties().put("password", "admin1234");
+            pds.getDriverProperties().put("URL", "jdbc:mariadb://localhost:3306/mysql");
             pds.init();
         }
     };

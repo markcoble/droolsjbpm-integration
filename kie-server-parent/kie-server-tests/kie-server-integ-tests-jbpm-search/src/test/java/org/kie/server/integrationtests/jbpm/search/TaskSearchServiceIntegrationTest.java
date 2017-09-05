@@ -75,6 +75,13 @@ public class TaskSearchServiceIntegrationTest extends JbpmQueriesKieServerBaseIn
     }
 
     @Test
+    public void testFindTaskWithIncompatibleTypeFilterSize() throws Exception {
+       List<TaskInstance> tasks = searchServicesClient.findHumanTasksWithFilters( createQueryFilterGreaterThanOrEqualsTo( TaskField.CREATEDON,
+                                                                                                                             "invalid data type" ),0,100);
+       System.out.println("---------->>>>>>>>>> size " + tasks.size());
+    }
+    
+    @Test
     public void testFindTaskWithCreatedOnGreaterThanOrEqualsToFilter() throws Exception {
         Long processInstanceId = processClient.startProcess( CONTAINER_ID,
                                                              PROCESS_ID_USERTASK );
